@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeMetrics - Data Entry</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            position: relative; /* Necessary for overlay positioning */
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 5px; }
+        .option-box {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .option-box:hover { border-color: #007bff; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            width: 100%;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .btn-red { background-color: #B2071D; color: white; }
+        .btn-blue { background-color: #007bff; color: white; }
+        
+        .steps-box {
+            font-size: 0.8rem;
+            margin-top: 15px;
+            color: #666;
+            background: #fffbe6;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ffe58f;
+        }
+
+        /* --- NEW SPINNER STYLES --- */
+        #loading-overlay {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Spinner Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Analyzing your data... this may take a moment.</p>
+    </div>
+
+    <h1>TubeMetrics</h1>
+    <p style="text-align: center; color: #666;">If you have data go directly to step 2 or otherwise download it from step 1</p>
+
+    <div class="option-box">
+        <h3>Step 1: Get Your YouTube Data</h3>
+        <p>Click the link below to go to Google Takeout. We've pre-selected your YouTube data for you.</p>
+        <a href="https://takeout.google.com/takeout/custom/youtube" target="_blank" class="btn btn-red">
+           Go to Google Takeout
+        </a>
+        
+        <div class="steps-box">
+            <strong>Steps to Export:</strong>
+            <ol style="margin-top: 8px; padding-left: 20px;">
+                <li>Select <b>Multiple Formats</b></li>
+                <li>Scroll to bottom, where you see <b>history</b> and change format from <b>"HTML"</b> to <b>"JSON"</b></li>
+                <li>Click <b>Next</b> and then click <b>Create Export</b></li>
+                <li>The data download link will be provided to <b>Gmail</b>, and download it.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="option-box">
+        <form id="upload-form" action="/process-upload" method="POST" enctype="multipart/form-data">
+            <label for="file">Step 2: Upload Existing Data (ZIP format)</label>
+            <input type="file" id="file" name="file" accept=".zip" required>
+            <button type="submit" class="btn btn-blue" id="submit-btn">Upload and Analyze</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('upload-form');
+    const overlay = document.getElementById('loading-overlay');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', function() {
+        // Show the loading spinner overlay
+        overlay.style.display = 'flex';
+        
+        // Disable the button to prevent multiple submissions
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Processing...";
+        submitBtn.style.backgroundColor = "#ccc";
+        submitBtn.style.cursor = "not-allowed";
+    });
+</script>
+
+</body>
+</html>
