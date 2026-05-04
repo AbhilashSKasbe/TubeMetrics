@@ -21,6 +21,7 @@ RapidFuzz==3.13.0
 PyMuPDF==1.26.3
 Pillow==11.3.0
 python-dateutil==2.9.0.post0
+pyarrow>=15.0.0
 
 # --- Frontend (If using Streamlit) ---
 streamlit==1.51.0
