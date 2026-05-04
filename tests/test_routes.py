@@ -1,5 +1,5 @@
 # tests/test_routes.py
-from app import app  # Import your Flask app
+from app import main  # Import your Flask app
 
 def test_homepage_loads():
     """Test that the homepage returns a 200 OK status."""
