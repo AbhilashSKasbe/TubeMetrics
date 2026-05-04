@@ -6,6 +6,7 @@ import json
 import requests
 import isodate 
 from flask import Flask, render_template, request
+import ijson
 
 load_dotenv()
 
