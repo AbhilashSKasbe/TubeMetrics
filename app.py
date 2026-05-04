@@ -143,18 +143,27 @@ def process_upload():
         return "No selected file"
     
     try:
+        # Load the 3MB compressed ZIP into memory (This is safe and small)
         zip_data = io.BytesIO(file.read())
         with zipfile.ZipFile(zip_data, 'r') as z:
             target = next((f for f in z.namelist() if 'watch-history.json' in f), None)
             if not target: return "Error: watch-history.json not found in ZIP."
             
             with z.open(target) as f:
-                data = json.load(f)
-                # Unpack the new error variable
-                shorts, videos, categories, error = perform_analysis(data)
+                # STREAM THE JSON: 'item' yields objects from the main JSON array one by one
+                objects = ijson.items(f, 'item')
+                
+                # Sip only the first 500 items, then stop reading
+                target_data = []
+                for i, obj in enumerate(objects):
+                    if i >= 500:
+                        break
+                    target_data.append(obj)
+                
+                # Pass ONLY the tiny 500-item list to your analysis function
+                shorts, videos, categories, error = perform_analysis(target_data)
                 
                 if error:
-                    # Pass the error to the template
                     return render_template('results.html', error=error)
                 
                 total_watched = shorts + videos
